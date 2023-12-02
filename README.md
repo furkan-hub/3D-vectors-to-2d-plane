@@ -1,8 +1,3 @@
-# 3D-vectors-to-2d-plane
-i just create a script that transfrom 3d vectors to 2d plane 
-
-# Mapping 3D World to 2D Screen
-
 This project includes the necessary steps to project a 3-dimensional world image onto a 2-dimensional screen.
 # Mapping 3D World to 2D Screen
 
