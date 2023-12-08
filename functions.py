@@ -8,22 +8,34 @@ def camera_W_H(axis,plane,S1,S2,S3,h):
     
     W = ((S2[0]-S1[0])**2+(S2[1]-S1[1])**2+(S2[2]-S1[2])**2)**(1/2)
     H = ((S3[0]-S1[0])**2+(S3[1]-S1[1])**2+(S3[2]-S1[2])**2)**(1/2)
-
+    
+    mp = ((S2[0]+S3[0])/2,(S2[1]+S3[1])/2,(S2[2]+S3[2])/2)
+    
     pp_s1 = (plane[0]*S1[0]+plane[1]*S1[1]+plane[2]*S1[2])
     pp_s2 = (plane[0]*S2[0]+plane[1]*S2[1]+plane[2]*S2[2])
-    pp_m = (plane[0]*S3[0]+plane[1]*S3[1]+plane[2]*S3[2])
+    pp_m = (plane[0]*mp[0]+plane[1]*mp[1]+plane[2]*mp[2])
 
-    n = [(plane[0])/((plane[0]**2+plane[1]**2+plane[2]**2)**(1/2)),(plane[1])/((plane[0]**2+plane[1]**2+plane[2]**2)**(1/2)),(plane[2])/((plane[0]**2+plane[1]**2+plane[2]**2)**(1/2))]
+    a, b, c = symbols('a b c')
+
+    equation1 = Eq(a * S1[0] + b * S1[1] + c * S1[2], 1)
+    equation2 = Eq(a * S2[0] + b * S2[1] + c * S2[2], 1)
+    equation3 = Eq(a * mp[0] + b * mp[1] + c * mp[2], 1)
+    
+    solution = solve((equation1, equation2, equation3), (a, b, c))
+    plane_equation = solution[a], solution[b], solution[c]  
+    normal_vector = [solution[a], solution[b], solution[c]]
+
+    n = [(normal_vector[0])/((normal_vector[0]**2+normal_vector[1]**2+normal_vector[2]**2)**(1/2)),(normal_vector[1])/((normal_vector[0]**2+normal_vector[1]**2+normal_vector[2]**2)**(1/2)),(normal_vector[2])/((normal_vector[0]**2+normal_vector[1]**2+normal_vector[2]**2)**(1/2))]
 
     print("n: ",n)
 
     if not pp_s1 and pp_s2 and pp_m == 1:
         print("plane parameters can not define a plane change value")
 
-    c = [axis[0]+h*n[0],axis[1]+h*n[1],axis[2]+h*n[2]]# camera point
+    c = [mp[0]+h*n[0],mp[1]+h*n[1],mp[2]+h*n[2]]# camera point
 
     print("Camera cordinate: ",c)
-
+        
     camera_W_H_result = [c,W,H]
     
     return camera_W_H_result
@@ -68,6 +80,6 @@ def vector_2d_to_2d(Vector,plane,S1,S2,S3,H,W,c):#Vector must be
 
     n = (((Vector[0]-S1[0])**2+(Vector[1]-S1[1])**2+(Vector[2]-S1[2]))**(1/2))*sin_u
     
-    cord = [m,n]
+    cord = [m,n,0]
     
     return cord
